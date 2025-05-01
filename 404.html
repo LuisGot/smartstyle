@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Redirecting...</title>
+		<script>
+			// Read the base path from the <base> tag if available, otherwise default to '/'
+			const baseTag = document.querySelector("base");
+			const basePath = baseTag ? baseTag.getAttribute("href") : "/";
+
+			// Construct the redirect URL by removing the base path from the start if present
+			let targetPath = location.pathname;
+			if (targetPath.startsWith(basePath)) {
+				targetPath = targetPath.substring(basePath.length);
+			}
+
+			// Preserve the query string and hash
+			const redirectUrl =
+				basePath +
+				"?p=" +
+				encodeURIComponent(targetPath) +
+				"&q=" +
+				encodeURIComponent(location.search.substring(1)) +
+				location.hash;
+
+			// Perform the redirect using session storage to avoid loops
+			sessionStorage.redirect = redirectUrl;
+			location.replace(basePath);
+		</script>
+	</head>
+	<body>
+		If you are not redirected automatically, follow this
+		<a id="redirect-link" href="#">link</a>.
+		<script>
+			// Update the link href just in case the script above fails
+			document.getElementById("redirect-link").href = basePath;
+		</script>
+	</body>
+</html>
